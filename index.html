@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mi tarjeta digital</title>
+<style>
+:root{--g1:#06241a;--g2:#0f5a36;--mint:#8ff0b5;--ink:#f1fff6;--soft:#bfe9cf;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;background:radial-gradient(120% 80% at 50% 0%,var(--g2),var(--g1) 70%) fixed;color:var(--ink);font-family:"Nunito","Segoe UI",system-ui,sans-serif;overflow-x:hidden}
+.bg{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.bg i{position:absolute;bottom:-120px;border-radius:50%;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.35),rgba(143,240,181,.10) 55%,transparent 70%);border:1px solid rgba(255,255,255,.18);animation:up linear infinite}
+@keyframes up{to{transform:translateY(-120vh) translateX(30px)}}
+main{position:relative;max-width:440px;margin:0 auto;padding:36px 20px 40px;text-align:center}
+.glass{background:radial-gradient(circle at 30% 22%,rgba(255,255,255,.5),rgba(255,255,255,.10) 42%,rgba(143,240,181,.22));border:1.5px solid rgba(255,255,255,.45);box-shadow:inset 0 0 22px rgba(255,255,255,.18),0 10px 30px rgba(0,0,0,.35);backdrop-filter:blur(6px)}
+.avatar{width:180px;height:180px;border-radius:50%;margin:0 auto;padding:10px;display:grid;place-items:center}
+.avatar>*{width:100%;height:100%;border-radius:50%;object-fit:cover;display:grid;place-items:center;background:var(--mint);color:var(--g1);font-size:56px;font-weight:800}
+h1{margin:20px 0 6px;font-size:30px;font-weight:800}
+.tag{margin:0 auto 30px;max-width:300px;color:var(--soft);font-size:15px;line-height:1.45}
+.cluster{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px}
+.cluster a{border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--ink);text-decoration:none;font-weight:700;font-size:13px;line-height:1.15;padding:10px;animation:fl 5s ease-in-out infinite;transition:transform .2s}
+.cluster a:nth-child(2){animation-delay:-1.2s}.cluster a:nth-child(3){animation-delay:-2.4s}.cluster a:nth-child(4){animation-delay:-3.1s}.cluster a:nth-child(5){animation-delay:-4s}.cluster a:nth-child(6){animation-delay:-.6s}
+@keyframes fl{50%{transform:translateY(-8px)}}
+.cluster a:hover,.cluster a:focus-visible{outline:3px solid var(--mint);transform:scale(1.07)}
+.cluster svg{fill:var(--mint)}
+.s1{width:138px;height:138px}.s1 svg{width:44px;height:44px}
+.s2{width:118px;height:118px}.s2 svg{width:36px;height:36px}
+.s3{width:100px;height:100px;font-size:12px!important}.s3 svg{width:30px;height:30px}
+.save{margin-top:30px;padding:12px 24px;border-radius:999px;color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.save:focus-visible{outline:3px solid var(--mint)}
+@media(prefers-reduced-motion:reduce){.bg i,.cluster a{animation:none}}
+</style></head><body>
+<div class="bg" id="bg" aria-hidden="true"></div>
+<main>
+  <div class="avatar glass" id="avatar"></div>
+  <h1 id="name"></h1><p class="tag" id="tag"></p>
+  <div class="cluster" id="links"></div>
+  <button class="save glass" id="save">Guardar mi contacto</button>
+</main>
+<script>
+/* ====== EDITA SOLO ESTA SECCIÓN ====== */
+const PERFIL = {
+  nombre: "Tu Nombre Apellido",
+  frase: "Administrador de redes. Te ayudo a mantener tus redes seguras y funcionando.",
+  foto: "",                       // URL de tu foto (vacío = iniciales)
+  whatsapp: "51999999999",        // código de país + número, sin + ni espacios
+  movil: "+51999999999",
+  email: "tucorreo@gmail.com",
+  cv: "cv.pdf",                   // tu CV en PDF: súbelo junto a index.html con este nombre
+  github: "https://github.com/tu-usuario",
+  youtube: "https://www.youtube.com/@tu-canal"
+};
+/* ===================================== */
+const ico = {
+  wa:'<path d="M12 2a10 10 0 0 0-8.5 15.200L2 22l4.900-1.400A10 10 0 1 0 12 2Zm0 2a8 8 0 1 1-4.200 14.800l-.4-.2-2.400.7.7-2.300-.3-.4A8 8 0 0 1 12 4Zm-3 3.500c-.3 0-.6.100-.8.500-.3.400-.9 1.100-.9 2.300 0 1.200.9 2.400 1 2.600.2.200 1.800 2.900 4.500 3.900 2.200.8 2.700.700 3.100.600.500-.1 1.500-.6 1.700-1.200.2-.6.200-1.100.1-1.200l-.4-.2-1.600-.8c-.2-.1-.4-.1-.6.100l-.7.900c-.1.200-.3.200-.5.100-.9-.4-1.800-.9-2.500-1.900-.2-.3-.1-.4.100-.6l.4-.5.200-.4v-.4l-.7-1.700c-.2-.5-.4-.4-.6-.4Z"/>',
+  tel:'<path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.400 11.400 0 0 0 3.600.6 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.500a1 1 0 0 1 1 1c0 1.300.2 2.500.6 3.600a1 1 0 0 1-.25 1Z"/>',
+  mail:'<path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm9 7.500L4 7.500V8l8 5 8-5v-.5l-8 5Z"/>',
+  web:'<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.900 9h-3a15 15 0 0 0-1.300-5.100A8 8 0 0 1 18.900 11ZM12 4c.9 1.200 1.700 3.200 1.900 7h-3.800C10.300 7.200 11.100 5.200 12 4ZM4.200 13h3a15 15 0 0 0 1.300 5.100A8 8 0 0 1 4.200 13Zm3-2h-3a8 8 0 0 1 4.300-5.100A15 15 0 0 0 7.200 11ZM12 20c-.9-1.200-1.700-3.200-1.900-7h3.800c-.2 3.800-1 5.800-1.900 7Zm2.500-1.900A15 15 0 0 0 15.800 13h3a8 8 0 0 1-4.300 5.100Z"/>',
+  gh:'<path d="M12 2a10 10 0 0 0-3.200 19.500c.5.1.7-.2.7-.5v-1.800c-2.800.6-3.400-1.200-3.400-1.200-.5-1.100-1.100-1.400-1.100-1.400-.9-.6.1-.6.1-.6 1 .1 1.500 1 1.500 1 .9 1.500 2.300 1.100 2.900.8.1-.7.4-1.100.6-1.300-2.200-.3-4.600-1.100-4.600-5 0-1.100.4-2 1-2.700-.1-.3-.4-1.300.1-2.700 0 0 .8-.3 2.700 1a9.400 9.400 0 0 1 5 0c1.900-1.300 2.700-1 2.700-1 .5 1.400.2 2.400.1 2.700.6.7 1 1.600 1 2.700 0 3.900-2.300 4.700-4.600 5 .4.3.7.9.7 1.900v2.800c0 .3.2.6.7.5A10 10 0 0 0 12 2Z"/>',
+  li:'<path d="M4.500 3A2 2 0 1 0 4.500 7 2 2 0 0 0 4.500 3ZM3 9h3v12H3V9Zm6 0h2.900v1.700c.5-.9 1.600-1.900 3.400-1.900 3.300 0 3.700 2.200 3.700 5V21h-3v-6c0-1.400 0-3.100-1.900-3.100s-2.200 1.500-2.200 3V21H9V9Z"/>',
+  cv:'<path d="M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm7 1.500V9h5.500L13 3.500ZM8 13h8v1.500H8V13Zm0 3.500h8V18H8v-1.500Z"/>',
+  yt:'<path d="M21.600 7.200a2.500 2.500 0 0 0-1.800-1.800C18.200 5 12 5 12 5s-6.200 0-7.800.4A2.500 2.500 0 0 0 2.400 7.200C2 8.800 2 12 2 12s0 3.200.4 4.800a2.500 2.500 0 0 0 1.800 1.800C5.800 19 12 19 12 19s6.200 0 7.800-.4a2.500 2.500 0 0 0 1.800-1.800c.4-1.600.4-4.800.4-4.800s0-3.200-.4-4.800ZM10 15V9l5.200 3L10 15Z"/>'
+};
+
+const svg=p=>`<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
+const $=id=>document.getElementById(id), P=PERFIL;
+document.title=P.nombre;
+$("name").textContent=P.nombre;$("tag").textContent=P.frase;
+$("avatar").innerHTML=P.foto?`<img src="${P.foto}" alt="Foto de ${P.nombre}">`:`<span>${P.nombre.split(" ").slice(0,2).map(w=>w[0]).join("").toUpperCase()}</span>`;
+const L=[[ico.wa,"WhatsApp",`https://wa.me/${P.whatsapp}`,"s1"],[ico.tel,"Llamar",`tel:${P.movil}`,"s2"],[ico.mail,"Email",`mailto:${P.email}`,"s2"],[ico.cv,"Mi CV",P.cv,"s2"],[ico.gh,"GitHub",P.github,"s3"],[ico.yt,"YouTube",P.youtube,"s3"]];
+$("links").innerHTML=L.map(([i,t,h,c])=>`<a class="glass ${c}" href="${h}" target="_blank" rel="noopener">${svg(i)}<span>${t}</span></a>`).join("");
+let b="";for(let k=0;k<9;k++){const z=30+Math.random()*90;b+=`<i style="width:${z}px;height:${z}px;left:${Math.random()*95}%;animation-duration:${14+Math.random()*16}s;animation-delay:-${Math.random()*20}s"></i>`}
+$("bg").innerHTML=b;
+$("save").onclick=()=>{const [n,...a]=P.nombre.split(" ");const v=`BEGIN:VCARD\nVERSION:3.0\nFN:${P.nombre}\nN:${a.join(" ")};${n};;;\nTEL;TYPE=CELL:${P.movil}\nEMAIL:${P.email}\nEND:VCARD`;const l=document.createElement("a");l.href="data:text/vcard;charset=utf-8,"+encodeURIComponent(v);l.download="contacto.vcf";l.click()};
+</script></body></html>
